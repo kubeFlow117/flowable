@@ -1,43 +1,67 @@
 spring:
+  security:
+    basic:
+      enabled: true
+    user:
+      name: admin
+      password: test
+  application:
+    name: FlowableApplication
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:flowable;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password:
+    driver-class-name: org.h2.Driver
   h2:
     console:
       enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
 
+# Flowable Configuration
 flowable:
+  check-process-definitions: true
+  async-executor-activate: true
+  admin:
+    app:
+      idm-admin-password: test # Default admin password for IDM
+  process:
+    enabled: true
+    definition-locations-prefix: classpath:/processes/
+  idm:
+    enabled: true
+  modeler:
+    enabled: true
+  task:
+    enabled: true
+  rest:
+    enabled: true
   common:
     app:
-      id: flowable
-      name: Flowable Example
-  idm:
-    app:
-      admin:
-        user-id: admin
+      idm-admin:
+        user: admin
         password: test
-
-  modeler:
-    app: true
-
-  task:
-    app: true
-
-  admin:
-    app: true
+      idm-url: http://localhost:8080/flowable-idm # Ensure this URL is correct and accessible
 
 server:
   port: 8080
 
 logging:
   level:
-    root: INFO
-    org.flowable: DEBUG
+    org:
+      springframework:
+        web: DEBUG
+    flowable: DEBUG
 
 management:
+  endpoint:
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: "*"
